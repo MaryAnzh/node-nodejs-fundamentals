@@ -1,6 +1,8 @@
 import { promises as fs, Dirent } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { FILE_NOT_EXIST_CODE, ERROR_MESSAGE, DIRECTORY } from '../constants.js';
+import { FILE } from 'dns';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,9 +11,8 @@ const workspaceDir = path.join(__dirname, workspace);
 const jsonName = 'snapshot.json';
 
 const snapshot = async () => {
-  const workspacePath = path.join(__dirname, workspaceDir);
-
   try {
+    await fs.access(workspaceDir);
     const items = await fs.readdir(workspaceDir, { withFileTypes: true, recursive: true });
     const entries = [];
 
@@ -24,6 +25,7 @@ const snapshot = async () => {
       const relativePath = path.relative(workspaceDir, fullPath);
 
       if (itemType === 1) {
+        // return bites, as in task
         const stat = await fs.stat(fullPath);
         const buffer = await fs.readFile(fullPath);
         const base64 = buffer.toString('base64');
@@ -31,14 +33,14 @@ const snapshot = async () => {
 
         entries.push({
           path: normalizedPath,
-          type: 'file',
+          type: FILE,
           size: stat.size,
           content: base64
         });
       } else {
         entries.push({
           path: relativePath,
-          type: 'directory',
+          type: DIRECTORY,
         });
       }
     }
@@ -61,6 +63,9 @@ const snapshot = async () => {
       console.error(e)
     }
   } catch (e) {
+    if (e.code === FILE_NOT_EXIST_CODE) {
+      throw new Error(ERROR_MESSAGE);
+    }
     console.error(e);
   }
 };
