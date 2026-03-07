@@ -1,13 +1,13 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { FILE_NOT_EXIST_CODE } from '../constants.js';
+import { DIRECTORY, FILE, FILE_NOT_EXIST_CODE, SNAPSHOT_JSON, ERROR_MESSAGE } from '../constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const restore = async () => {
-  const snapshotPath = path.join(__dirname, 'snapshot.json');
+  const snapshotPath = path.join(__dirname, SNAPSHOT_JSON);
   const restoreDir = path.join(__dirname, 'workspace_restored');
 
   try {
@@ -20,8 +20,8 @@ const restore = async () => {
     try {
       await fs.access(restoreDir);
       throw new Error(ERROR_MESSAGE);
-    } catch (e) {
-      if (e.code !== FILE_NOT_EXIST_CODE) {
+    } catch ({ code }) {
+      if (code !== FILE_NOT_EXIST_CODE) {
         throw new Error(ERROR_MESSAGE);
       }
     }
@@ -33,20 +33,21 @@ const restore = async () => {
     await fs.mkdir(restoreDir);
 
     for (const entry of entries) {
-      if (entry.type === 'directory') {
-        const dirPath = path.join(restoreDir, entry.path);
+      const { type, path: entryPath } = entry;
+
+      if (type === DIRECTORY) {
+        const dirPath = path.join(restoreDir, entryPath);
         await fs.mkdir(dirPath, { recursive: true });
       }
-    }
 
-    for (const entry of entries) {
-      if (entry.type === 'file') {
-        const filePath = path.join(restoreDir, entry.path);
+      if(type === FILE) {
+        const { content } = entry;
+        const filePath = path.join(restoreDir, entryPath);
         const dirPath = path.dirname(filePath);
 
         await fs.mkdir(dirPath, { recursive: true });
 
-        const buffer = Buffer.from(entry.content, 'base64');
+        const buffer = Buffer.from(content, 'base64');
         await fs.writeFile(filePath, buffer);
       }
     }
@@ -56,6 +57,5 @@ const restore = async () => {
     throw new Error(ERROR_MESSAGE);
   }
 }
-
 
 await restore();

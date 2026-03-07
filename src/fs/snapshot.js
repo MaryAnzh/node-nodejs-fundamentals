@@ -1,13 +1,12 @@
 import { promises as fs, Dirent } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { FILE_NOT_EXIST_CODE, ERROR_MESSAGE, DIRECTORY } from '../constants.js';
+import { FILE_NOT_EXIST_CODE, ERROR_MESSAGE, DIRECTORY, WORKSPACE_PATH } from '../constants.js';
 import { FILE } from 'dns';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const workspace = '/home/user/workspace';
-const workspaceDir = path.join(__dirname, workspace);
+const workspaceDir = path.join(__dirname, WORKSPACE_PATH);
 const jsonName = 'snapshot.json';
 
 const snapshot = async () => {

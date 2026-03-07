@@ -4,6 +4,7 @@ export const {
     SNAPSHOT_JSON,
     DIRECTORY,
     FILE,
+    WORKSPACE_PATH,
 }
     =
 {
@@ -11,5 +12,6 @@ export const {
     ERROR_MESSAGE: 'FS operation failed',
     SNAPSHOT_JSON: 'snapshot.json',
     FILE: 'file',
-    DIRECTORY: 'directory'
+    DIRECTORY: 'directory',
+    WORKSPACE_PATH: '/home/user/workspace'
 };
