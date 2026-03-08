@@ -1,10 +1,16 @@
 const execCommand = () => {
-  // Write your code here
-  // Take command from CLI argument
-  // Spawn child process
-  // Pipe child stdout/stderr to parent stdout/stderr
-  // Pass environment variables
-  // Exit with same code as child
+  const args = process.argv.slice(2);
+
+  if (args.length === 0) {
+    console.error('No command provided');
+    process.exit(1);
+  }
+
+  const [command, ...commandArgs] = args;
+  
+  // not completed.....
+
+
 };
 
 execCommand();

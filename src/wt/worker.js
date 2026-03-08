@@ -5,5 +5,6 @@ import { parentPort } from 'worker_threads';
 // Send back to main thread
 
 parentPort.on('message', (data) => {
-  // Write your code here
+  const sortNumber = [...numbers].sort((a, b) => a - b);
+  parentPort.postMessage(sortNumber);
 });
