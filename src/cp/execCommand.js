@@ -1,16 +1,29 @@
-const execCommand = () => {
-  const args = process.argv.slice(2);
+import { spawn } from 'child_process';
 
-  if (args.length === 0) {
+// test  node src/cp/execCommand.js "node -v"
+// in windows -la does't exist
+const execCommand = () => {
+  const input = process.argv.at(2);
+
+  if (!input) {
     console.error('No command provided');
     process.exit(1);
   }
 
-  const [command, ...commandArgs] = args;
-  
-  // not completed.....
+  const [cmd, ...args] = input.split(" ");
 
+  const child = spawn(cmd, args, {
+    stdio: ['inherit', 'pipe', 'pipe'],
+    env: process.env                   
+  });
 
+  child.stdout.pipe(process.stdout);
+
+  child.stderr.pipe(process.stderr);
+
+  child.on('close', (code) => {
+    process.exit(code);
+  });
 };
 
 execCommand();

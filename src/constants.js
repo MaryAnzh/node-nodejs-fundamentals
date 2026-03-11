@@ -5,6 +5,7 @@ export const {
     DIRECTORY,
     FILE,
     WORKSPACE_PATH,
+    WORKSPACE
 }
     =
 {
@@ -13,5 +14,6 @@ export const {
     SNAPSHOT_JSON: 'snapshot.json',
     FILE: 'file',
     DIRECTORY: 'directory',
-    WORKSPACE_PATH: '/home/user/workspace'
+    WORKSPACE_PATH: '/home/user/workspace',
+    WORKSPACE: 'workspace'
 };
